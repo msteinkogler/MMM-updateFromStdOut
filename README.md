@@ -1,5 +1,5 @@
 # MMM-updateFromStdOut
-A Magic Mirror module to receive input via stdout from a program running in the background
+A [Magic Mirror](https://magicmirror.builders/) [module](https://github.com/MichMich/MagicMirror/wiki/MagicMirror%C2%B2-Modules) to receive input via stdout from a program running in the background
 and updating the mirror with this information. Initially used for displaying temperature readings from
 a USB DVB-T stick acting as a 433Mhz SDR, receiving input from a cheap wireless weather sensor (GT-WT-01).
 
