@@ -50,7 +50,20 @@ Module.register("MMM-updateFromStdOut", {
     }
 
     var div = document.createElement("div");
-    div.innerHTML = "<span class='bold'>" + this.temperature + "</span>&deg;C&nbsp;";
+    var innerHTML = "<span class='small'><i aria-hidden='true' class='fa fa-battery-";
+    if (this.battery === "OK") {
+      innerHTML += "full";
+    }
+    else if (this.battery === "low") {
+      innerHTML += "half";
+    } 
+    else {
+      innerHTML += "empty' style='color: red";
+    }
+    innerHTML += "'></i></span>&nbsp;";
+    div.innerHTML = innerHTML;
+
+    div.innerHTML += "<span class='bold'>" + this.temperature + "</span>&deg;C&nbsp;";
     div.innerHTML += "<span class='bold'>" + this.humidity + "</span>%";
     wrapper.appendChild(div);
 
@@ -59,15 +72,9 @@ Module.register("MMM-updateFromStdOut", {
 
   socketNotificationReceived: function (notification, payload) {
     if (notification === 'DATA-MMM-updateFromStdOut') {
-      if (payload.temp != "-1000") {
-        this.temperature = payload.temp;
-      }
-      if (payload.humidity != "-1000") {
-        this.humidity = payload.humidity;
-      }
-      if (payload.battery != "exploding") {
-        this.battery = payload.battery;
-      }
+      this.temperature = payload.temp;
+      this.humidity = payload.humidity;
+      this.battery = payload.battery;
       this.loaded = 1;
       
       this.updateDom();

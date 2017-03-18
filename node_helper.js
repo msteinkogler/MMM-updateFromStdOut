@@ -37,21 +37,33 @@ module.exports = NodeHelper.create({
     if (notification === 'REQUEST-MMM-updateFromStdOut') {
       var self = this;
 
+      var timeoutId = null;
+
       var rtl_433 = spawn('/usr/local/bin/rtl_433', ['-q', '-G', '-s', '1000000'], {
         detached: true
       });
 
       rtl_433.stdout.on('data', function (data) {
         try {
+          if (timeoutId !== null) {
+            clearTimeout(timeoutId);
+          }
+          
+          // If we haven't received information from the sensor for the timeout, 
+          // the battery is probably empty.
+          timeoutId = setTimeout(function() {
+            self.sendSocketNotification('DATA-MMM-updateFromStdOut', {
+              temp: "--",
+              humidity: "--",
+              battery: "empty"
+            });
+            return;
+          }, 10 * 60 * 1000); // 20 minutes
+
           var strData = data.toString();
-
-          var temp = "-1000";
-          var humidity = "-1000";
-          var battery = "exploding";
-
-          temp = strData.split("temperature ")[1].split(" C / ")[0];
-          humidity = strData.split("humidity ")[1].split("%")[0];
-          battery = strData.split("battery ")[1].split(", ")[0];
+          var temp = strData.split("temperature ")[1].split(" C / ")[0];
+          var humidity = strData.split("humidity ")[1].split("%")[0];
+          var battery = strData.split("battery ")[1].split(", ")[0];
 
           self.sendSocketNotification('DATA-MMM-updateFromStdOut', {
             temp: temp,
