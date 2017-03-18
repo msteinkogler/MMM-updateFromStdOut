@@ -58,7 +58,7 @@ module.exports = NodeHelper.create({
               battery: "empty"
             });
             return;
-          }, 10 * 60 * 1000); // 20 minutes
+          }, 10 * 60 * 1000); // 10 minutes
 
           var strData = data.toString();
           var temp = strData.split("temperature ")[1].split(" C / ")[0];
