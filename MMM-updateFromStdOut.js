@@ -51,10 +51,10 @@ Module.register("MMM-updateFromStdOut", {
 
     var div = document.createElement("div");
     var innerHTML = "<span class='small'><i aria-hidden='true' class='fa fa-battery-";
-    if (this.battery === "OK") {
+    if (this.battery === "1") {
       innerHTML += "full";
     }
-    else if (this.battery === "low") {
+    else if (this.battery === "0") {
       innerHTML += "half";
     } 
     else {

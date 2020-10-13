@@ -39,7 +39,7 @@ module.exports = NodeHelper.create({
 
       var timeoutId = null;
 
-      var rtl_433 = spawn('/usr/local/bin/rtl_433', ['-q', '-G', '-s', '1000000'], {
+      var rtl_433 = spawn('/usr/local/bin/rtl_433', ['-R', '25', '-g', '50', '-s', '300000', '-F', 'json'], {
         detached: true
       });
 
@@ -48,8 +48,8 @@ module.exports = NodeHelper.create({
           if (timeoutId !== null) {
             clearTimeout(timeoutId);
           }
-          
-          // If we haven't received information from the sensor for the timeout, 
+
+          // If we haven't received information from the sensor for the timeout,
           // the battery is probably empty.
           timeoutId = setTimeout(function() {
             self.sendSocketNotification('DATA-MMM-updateFromStdOut', {
@@ -58,12 +58,15 @@ module.exports = NodeHelper.create({
               battery: "empty"
             });
             return;
-          }, 10 * 60 * 1000); // 10 minutes
+          }, 6 * 60 * 60 * 1000); // 6 hours
 
           var strData = data.toString();
-          var temp = strData.split("temperature ")[1].split(" C / ")[0];
-          var humidity = strData.split("humidity ")[1].split("%")[0];
-          var battery = strData.split("battery ")[1].split(", ")[0];
+          console.log('Received data from weather sensor:' + strData);
+
+          var sensorData = JSON.parse(strData);
+          var temp = parseFloat("" + sensorData.temperature_C).toFixed(1);
+          var humidity = parseFloat("" + sensorData.humidity).toFixed(0);
+          var battery = "" + sensorData.battery_ok;
 
           self.sendSocketNotification('DATA-MMM-updateFromStdOut', {
             temp: temp,
