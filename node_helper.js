@@ -39,7 +39,7 @@ module.exports = NodeHelper.create({
 
       var timeoutId = null;
 
-      var rtl_433 = spawn('/usr/local/bin/rtl_433', ['-R', '25', '-g', '50', '-s', '300000', '-F', 'json'], {
+      var rtl_433 = spawn('/usr/local/bin/rtl_433', ['-R', '25'], {
         detached: true
       });
 
@@ -61,12 +61,9 @@ module.exports = NodeHelper.create({
           }, 6 * 60 * 60 * 1000); // 6 hours
 
           var strData = data.toString();
-          console.log('Received data from weather sensor:' + strData);
-
-          var sensorData = JSON.parse(strData);
-          var temp = parseFloat("" + sensorData.temperature_C).toFixed(1);
-          var humidity = parseFloat("" + sensorData.humidity).toFixed(0);
-          var battery = "" + sensorData.battery_ok;
+          var temp = strData.split("Temperature: ")[1].split(" C")[0];
+          var humidity = strData.split("Humidity  : ")[1].split(" %")[0];
+          var battery = strData.split("Battery   : ")[1].split(" ")[0];
 
           self.sendSocketNotification('DATA-MMM-updateFromStdOut', {
             temp: temp,
