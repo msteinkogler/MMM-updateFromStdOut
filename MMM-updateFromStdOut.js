@@ -50,22 +50,16 @@ Module.register("MMM-updateFromStdOut", {
     }
 
     var div = document.createElement("div");
-    var innerHTML = "<span class='small'><i aria-hidden='true' class='fa fa-battery-";
-    if (this.battery === "1") {
-      innerHTML += "full";
-    }
-    else if (this.battery === "0") {
-      innerHTML += "half";
-    } 
-    else {
-      innerHTML += "empty' style='color: red";
-    }
-    innerHTML += "'></i></span>&nbsp;";
-    div.innerHTML = innerHTML;
 
-    div.innerHTML += "<span class='bold'>" + this.temperature + "</span>&deg;C&nbsp;";
-    div.innerHTML += "<span class='bold'>" + this.humidity + "</span>%";
-    wrapper.appendChild(div);
+    if (this.battery === "empty") {
+      div.innerHTML +=  "<i aria-hidden='true' class='fa fa-battery-empty' style='color: red'></i>";
+      wrapper.appendChild(div);
+    }
+    else {
+      div.innerHTML += "<span class='bold'>" + this.temperature + "</span>&deg;C&nbsp;";
+      div.innerHTML += "<span class='bold'>" + this.humidity + "</span>%";
+      wrapper.appendChild(div);
+    }
 
     return wrapper;
   },
