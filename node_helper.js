@@ -61,15 +61,17 @@ module.exports = NodeHelper.create({
           }, 6 * 60 * 60 * 1000); // 6 hours
 
           var strData = data.toString();
-          var temp = strData.split("Temperature: ")[1].split(" C")[0];
-          var humidity = strData.split("Humidity  : ")[1].split(" %")[0];
-          var battery = strData.split("Battery   : ")[1].split(" ")[0];
+          if (strData.includes("Temperature: ") && strData.includes("Humidity  : ") && strData.includes("Battery   : ")) {
+            var temp = strData.split("Temperature: ")[1].split(" C")[0];
+            var humidity = strData.split("Humidity  : ")[1].split(" %")[0];
+            var battery = strData.split("Battery   : ")[1].split(" ")[0];
 
-          self.sendSocketNotification('DATA-MMM-updateFromStdOut', {
-            temp: temp,
-            humidity: humidity,
-            battery: battery
-          });
+            self.sendSocketNotification('DATA-MMM-updateFromStdOut', {
+              temp: temp,
+              humidity: humidity,
+              battery: battery
+            });
+          }
         } catch (err) {
           console.log(err);
         }
